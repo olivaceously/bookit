@@ -79,10 +79,10 @@ controller.on('rtm_close', function (bot) {
 /**
  * Core bot logic goes here!
  */
-// BEGIN EDITING HERE!
 
 var rooms = ["Shenandoah", "Yosemite", "Redwoods", "Glacier", "Yellowstone"]
 var responses;
+var defaults_set = false;
 
 controller.on('bot_channel_join', function (bot, message) {
     bot.reply(message, "Hiya, let me know when you want to book a room!")
@@ -98,6 +98,7 @@ controller.hears(['hi', 'hello'], ['direct_mention', 'mention', 'direct_message'
 
 
 function available_rooms() {
+
     return rooms.join(", ");
 }
 
@@ -105,11 +106,15 @@ function available_rooms() {
 controller.hears(['find', 'find available', 'list', 'available rooms', 'find rooms'],
     ['direct_mention', 'mention', 'direct_message'],
     function(bot,message) {
-        bot.reply(message,'The following rooms are available: ' + available_rooms() + '.' );
+        if (defaults_set) {
+            bot.reply(message,'The following rooms are available: ' + available_rooms() + '.' );
+        } else {
+            bot.reply(message,'Your defaults aren\'t currently set. Please set them using "set defaults".');
+        }
 });
 
 // set defaults method
-controller.hears(['set defaults', 'reset defaults', 'Set Defaults', 'Set defaults'],
+controller.hears(['set defaults', 'reset defaults'],
     ['direct_mention', 'mention', 'direct_message'],
     function(bot,message) {
         bot.startConversation(message, function(err, convo) {
@@ -139,7 +144,6 @@ controller.hears(['set defaults', 'reset defaults', 'Set Defaults', 'Set default
                 callback: function(response, convo) {
                     convo.setVar('default_location', response.text);
                     convo.gotoThread('bos_thread');
-                    convo.next();
                 },
             },
             {
@@ -147,14 +151,12 @@ controller.hears(['set defaults', 'reset defaults', 'Set Defaults', 'Set default
                 callback: function(response, convo) {
                     convo.setVar('default_location', response.text);
                     convo.gotoThread('wal_thread');
-                    convo.next();
                 },
             },
             {
                 default: true,
                 callback: function(response, convo) {
                     convo.gotoThread('bad_response');
-                    convo.next();
                 },
             }
         ],{},'default');
@@ -171,11 +173,11 @@ controller.hears(['set defaults', 'reset defaults', 'Set Defaults', 'Set default
             convo.setVar('default_duration', response.text);
             convo.gotoThread('duration_thread')
         }, {}, 'wal_thread');
-       
 
         convo.on('end',function(convo) {
             if (convo.status=='completed') {
                 responses = convo.extractResponses();
+                defaults_set = true;
             } 
         });
     });
