@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/olivaceously/bookit.git"
+    "url": "git+https://github.com/olivaceously/easy-peasy-bot.git"
   },
   "keywords": [
     "slack",
@@ -20,12 +20,12 @@
   "bugs": {
     "url": "https://github.com/DEGoodmanWilson/easy-peasy-bot-app/issues"
   },
-  "homepage": "https://github.com/olivaceously/bookit#readme",
+  "homepage": "https://github.com/olivaceously/easy-peasy-bot#readme",
   "engines": {
     "node": "5.1.1"
   },
   "dependencies": {
-    "botkit": "0.2.2",
+    "botkit": "git+https://github.com/howdyai/botkit.git",
     "botkit-storage-mongo": "^1.0.2",
     "mongodb": "^1.4.39"
   }

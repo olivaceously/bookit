@@ -81,28 +81,112 @@ controller.on('rtm_close', function (bot) {
  */
 // BEGIN EDITING HERE!
 
+var defaults = [];
+
 controller.on('bot_channel_join', function (bot, message) {
-    bot.reply(message, "I'm here!")
+    bot.reply(message, "Hiya, let me know when you want to book a room!")
 });
 
-controller.hears('hello', 'direct_message', function (bot, message) {
-    bot.reply(message, 'Hello!');
-});
 
+//hello method
+controller.hears(['hi', 'hello'], ['direct_mention', 'mention', 'direct_message'],
+    function(bot,message) {
+        bot.reply(message,'Hello!');
+    }
+);
+
+
+// find method
+controller.hears(['find', 'available', 'list'],
+    ['direct_mention', 'mention', 'direct_message'],
+    function(bot,message) {
+        bot.createConversation()
+        bot.reply(message,'The following rooms are available: ');
+    }
+);
+
+// set defaults method
+controller.hears(['set defaults', 'reset defaults'],
+    ['direct_mention', 'mention', 'direct_message'],
+    function(bot,message) {
+        bot.startConversation(message, function(err, convo) {
+
+        // create a path for when a user says Boston
+        convo.addMessage('Great, I\'ve now set your default location to {{vars.default_location}} - aka the best office around!', 'bos_thread');
+
+        // create a path for when a user says Waltham
+        convo.addMessage('Great, I\'ve now set your default location to {{vars.default_location}}!', 'wal_thread');
+
+        // create a path where neither option was matched
+        // this message has an action field, which directs botkit to go back to the `default` thread after sending this message.
+        convo.addMessage({
+            text: 'Sorry I did not understand.',
+            action: 'default',
+        },'bad_response');
+
+        convo.addMessage('Sounds good to me! Your default meeting duration has now been set to {{vars.default_duration}} minutes.', 'duration_thread');
+
+        convo.addMessage('Congratulations, your defaults are all set! To reset them, just type "set defaults" again and we\'ll go through this whole process again', 'duration_thread');
+ 
+
+        // Asking for a default location in the default thread...
+        convo.addQuestion('What is your default office location?', [
+            {
+                pattern: 'Boston',
+                callback: function(response, convo) {
+                    convo.setVar('default_location', response.text);
+                    convo.gotoThread('bos_thread');
+                    convo.next();
+                },
+            },
+            {
+                pattern: 'Waltham',
+                callback: function(response, convo) {
+                    convo.setVar('default_location', response.text);
+                    convo.gotoThread('wal_thread');
+                    convo.next();
+                },
+            },
+            {
+                default: true,
+                callback: function(response, convo) {
+                    convo.gotoThread('bad_response');
+                    convo.next();
+                },
+            }
+        ],{},'default');
+
+        // Asking for a default duration in the Boston thread...
+        convo.addQuestion('How long do your meetings usually last in minutes? (e.g. you can say "30")', function(response, convo) {
+            convo.setVar('default_duration', response.text);
+            convo.gotoThread('duration_thread')
+        }, {}, 'bos_thread');
+
+
+        // Asking for a default duration in the Waltham thread...
+        convo.addQuestion('How long do your meetings usually last in minutes? (e.g. you can say "30")', function(response, convo) {
+            convo.setVar('default_duration', response.text);
+            convo.gotoThread('duration_thread')
+        }, {}, 'wal_thread')
+       
+       });
+
+    }
+);
 
 /**
  * AN example of what could be:
  * Any un-handled direct mention gets a reaction and a pat response!
  */
-//controller.on('direct_message,mention,direct_mention', function (bot, message) {
-//    bot.api.reactions.add({
-//        timestamp: message.ts,
-//        channel: message.channel,
-//        name: 'robot_face',
-//    }, function (err) {
-//        if (err) {
-//            console.log(err)
-//        }
-//        bot.reply(message, 'I heard you loud and clear boss.');
-//    });
-//});
+controller.on('direct_message,mention,direct_mention', function (bot, message) {
+   bot.api.reactions.add({
+       timestamp: message.ts,
+       channel: message.channel,
+       name: 'robot_face',
+   }, function (err) {
+       if (err) {
+           console.log(err)
+       }
+       bot.reply(message, 'I heard you loud and clear boss.');
+   });
+});
