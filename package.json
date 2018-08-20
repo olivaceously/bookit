@@ -1,7 +1,7 @@
 {
-  "name": "easy-peasy-bot",
+  "name": "bookit",
   "version": "1.0.0",
-  "description": "The awesomest bot evar.",
+  "description": "bookit lets you book conference rooms via slack!",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
@@ -9,18 +9,18 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/DEGoodmanWilson/easy-peasy-bot-app.git"
+    "url": "git+https://github.com/olivaceously/bookit.git"
   },
   "keywords": [
     "slack",
     "bot"
   ],
-  "author": "D.E. Goodman-Wilson",
+  "author": "Olivia MacDougal",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/DEGoodmanWilson/easy-peasy-bot-app/issues"
   },
-  "homepage": "https://github.com/DEGoodmanWilson/easy-peasy-bot-app#readme",
+  "homepage": "https://github.com/olivaceously/bookit#readme",
   "engines": {
     "node": "5.1.1"
   },
