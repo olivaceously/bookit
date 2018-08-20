@@ -81,7 +81,8 @@ controller.on('rtm_close', function (bot) {
  */
 // BEGIN EDITING HERE!
 
-var defaults = [];
+var rooms = ["Shenandoah", "Yosemite", "Redwoods", "Glacier", "Yellowstone"]
+var responses;
 
 controller.on('bot_channel_join', function (bot, message) {
     bot.reply(message, "Hiya, let me know when you want to book a room!")
@@ -96,17 +97,19 @@ controller.hears(['hi', 'hello'], ['direct_mention', 'mention', 'direct_message'
 );
 
 
+function available_rooms() {
+    return rooms.join(", ");
+}
+
 // find method
-controller.hears(['find', 'available', 'list'],
+controller.hears(['find', 'find available', 'list', 'available rooms', 'find rooms'],
     ['direct_mention', 'mention', 'direct_message'],
     function(bot,message) {
-        bot.createConversation()
-        bot.reply(message,'The following rooms are available: ');
-    }
-);
+        bot.reply(message,'The following rooms are available: ' + available_rooms() + '.' );
+});
 
 // set defaults method
-controller.hears(['set defaults', 'reset defaults'],
+controller.hears(['set defaults', 'reset defaults', 'Set Defaults', 'Set defaults'],
     ['direct_mention', 'mention', 'direct_message'],
     function(bot,message) {
         bot.startConversation(message, function(err, convo) {
@@ -167,12 +170,16 @@ controller.hears(['set defaults', 'reset defaults'],
         convo.addQuestion('How long do your meetings usually last in minutes? (e.g. you can say "30")', function(response, convo) {
             convo.setVar('default_duration', response.text);
             convo.gotoThread('duration_thread')
-        }, {}, 'wal_thread')
+        }, {}, 'wal_thread');
        
-       });
 
-    }
-);
+        convo.on('end',function(convo) {
+            if (convo.status=='completed') {
+                responses = convo.extractResponses();
+            } 
+        });
+    });
+});
 
 /**
  * AN example of what could be:
