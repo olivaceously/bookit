@@ -102,11 +102,15 @@ controller.hears(['hi', 'hello'], ['direct_mention', 'mention', 'direct_message'
 
 function available_rooms() {
 
-    return rooms.join(", ");
-}
-function available_rooms_waltham() {
+    if (defaultLocation == 'Boston' || defaultLocation == 'boston') {
 
-    return roomsWaltham.join(", ");
+        return rooms.join(", ");
+
+    }
+    else if (defaultLocation == 'Waltham' || defaultLocation == 'waltham') {
+
+        return roomsWaltham.join(", ");
+    }
 }
 
 // find method
@@ -115,12 +119,8 @@ controller.hears(['find', 'find available', 'list', 'available rooms', 'find roo
     function(bot,message) {
         if (defaults_set) {
 
-            if (defaultLocation == 'Boston' || defaultLocation == 'boston') {
-                bot.reply(message,'The following rooms are available: ' + available_rooms() + '.' );
-            }
-            else if (defaultLocation == 'Waltham' || defaultLocation == 'waltham') {
-                bot.reply(message,'The following rooms are available: ' + available_rooms_waltham() + '.' );
-            }
+            bot.reply(message,'The following rooms are available: ' + available_rooms() + '.' );
+
             
         } else {
             bot.reply(message,'Your defaults aren\'t currently set. Please set them using "set defaults".');
@@ -202,9 +202,16 @@ controller.hears(['set defaults', 'reset defaults'],
 });
 
 //book method
-controller.hears(['book'], ['direct_mention', 'mention', 'direct_message'],
+controller.hears(['book', 'bookit', 'book a room', 'book room', 'reserve', 'reserve a room', 'reserve room'], ['direct_mention', 'mention', 'direct_message'],
     function(bot,message) {
-        bot.reply(message,'Hello! I am currently working to get a room set up for you! We are currently looking within ' + defaultLocation + ' for a duration of ' + defaultDuration);
+        bot.reply(message,'Hello! I am currently working to get a room set up for you! We are currently looking for a room in ' + defaultLocation + ' for a duration of ' + defaultDuration + ' minutes.');
+
+        bot.startConversation(message, function(err, convo) {
+
+            // begin room booking conversation
+
+
+        });
     }
 );
 
