@@ -206,12 +206,12 @@ controller.hears(['book', 'bookit', 'book a room', 'book room', 'reserve', 'rese
     function(bot,message) {
         bot.reply(message,'Hello! I am currently working to get a room set up for you! We are currently looking for a room in ' + defaultLocation + ' for a duration of ' + defaultDuration + ' minutes.');
 
-        bot.startConversation(message, function(err, convo) {
+        // bot.startConversation(message, function(err, convo) {
 
-            // begin room booking conversation
+        //     // begin room booking conversation
 
 
-        });
+        // });
     }
 );
 
