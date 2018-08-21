@@ -81,6 +81,9 @@ controller.on('rtm_close', function (bot) {
  */
 
 var rooms = ["Shenandoah", "Yosemite", "Redwoods", "Glacier", "Yellowstone"]
+var roomsWaltham = ["W1", "W2", "W3", "W4"]
+var defaultLocation = "";
+var defaultDuration = "";
 var responses;
 var defaults_set = false;
 
@@ -101,13 +104,24 @@ function available_rooms() {
 
     return rooms.join(", ");
 }
+function available_rooms_waltham() {
+
+    return roomsWaltham.join(", ");
+}
 
 // find method
 controller.hears(['find', 'find available', 'list', 'available rooms', 'find rooms'],
     ['direct_mention', 'mention', 'direct_message'],
     function(bot,message) {
         if (defaults_set) {
-            bot.reply(message,'The following rooms are available: ' + available_rooms() + '.' );
+
+            if (defaultLocation == 'Boston' || defaultLocation == 'boston') {
+                bot.reply(message,'The following rooms are available: ' + available_rooms() + '.' );
+            }
+            else if (defaultLocation == 'Waltham' || defaultLocation == 'waltham') {
+                bot.reply(message,'The following rooms are available: ' + available_rooms_waltham() + '.' );
+            }
+            
         } else {
             bot.reply(message,'Your defaults aren\'t currently set. Please set them using "set defaults".');
         }
@@ -143,6 +157,7 @@ controller.hears(['set defaults', 'reset defaults'],
                 pattern: 'Boston',
                 callback: function(response, convo) {
                     convo.setVar('default_location', response.text);
+                    defaultLocation = response.text;
                     convo.gotoThread('bos_thread');
                 },
             },
@@ -150,6 +165,7 @@ controller.hears(['set defaults', 'reset defaults'],
                 pattern: 'Waltham',
                 callback: function(response, convo) {
                     convo.setVar('default_location', response.text);
+                    defaultLocation = response.text;
                     convo.gotoThread('wal_thread');
                 },
             },
@@ -164,6 +180,7 @@ controller.hears(['set defaults', 'reset defaults'],
         // Asking for a default duration in the Boston thread...
         convo.addQuestion('How long do your meetings usually last in minutes? (e.g. you can say "30")', function(response, convo) {
             convo.setVar('default_duration', response.text);
+            defaultDuration = response.text;
             convo.gotoThread('duration_thread')
         }, {}, 'bos_thread');
 
@@ -171,6 +188,7 @@ controller.hears(['set defaults', 'reset defaults'],
         // Asking for a default duration in the Waltham thread...
         convo.addQuestion('How long do your meetings usually last in minutes? (e.g. you can say "30")', function(response, convo) {
             convo.setVar('default_duration', response.text);
+            defaultDuration = response.text;
             convo.gotoThread('duration_thread')
         }, {}, 'wal_thread');
 
@@ -182,6 +200,13 @@ controller.hears(['set defaults', 'reset defaults'],
         });
     });
 });
+
+//book method
+controller.hears(['book'], ['direct_mention', 'mention', 'direct_message'],
+    function(bot,message) {
+        bot.reply(message,'Hello! I am currently working to get a room set up for you! We are currently looking within ' + defaultLocation + ' for a duration of ' + defaultDuration);
+    }
+);
 
 /**
  * AN example of what could be:
