@@ -1,16 +1,37 @@
-# easy-peasy-bot
+# bookit
 
-## The story of a (Slack)bot
+## And book it good!
 
-A (not so) long time ago, a team called Tiny Speck built an app to communicate with each other as they worked.
-In their daily work, they found that there were some mindless tasks they had to do over and over. These things pulled them out of important conversations, which slowed them down.
+This is a slack bot whose sole purpose is to help you book a meeting room in your office. Hopefully one day bookit will be able to integrate with Microsoft Outlook/Exchange.
 
-So, they built a special user in their messaging app: not a human user, but a digital user. The digital user took on some of their mindless tasks and integrated the other apps they used into their conversations.
+## Interacting with bookit
 
-Eventually their app was named Slack and their digital user, Slackbot.
-And lo, you can build a Slack Bot, too! With our API and this nifty repository, a bot for your team can be all yours.
+To interact with bookit, simply mention bookit in a channel or start a conversation with the bot!
 
-# Using Botkit for Custom Bots
+Here are some of the things that bookit knows how to respond to:
+
+- hi OR hello: say hello to bookit!
+
+- set defaults OR reset defaults: use this command to set default office location (Boston or Waltham) and default meeting duration in minutes (e.g. 15, 30, 90)
+
+- find OR find available OR list OR available rooms OR find room: use this command to see a list of currently available rooms based on your defaults. You must have your defaults set to use these phrases, and bookit will prompt you if you don't.
+
+
+## Planned Methods
+
+- book OR book room: book an available room based on your default meeting duration
+
+- my reservations OR reservations: list current room reservations
+
+- cancel OR cancel room: cancels a current reservation
+
+- change: change a current reservation
+
+
+
+
+
+## Intructions from Forked Repo: Using Botkit for Custom Bots
 1. Fork this project.
 2. Open up your favorite terminal app, and clone your new repository to your local computer.
 3. This is a Node.js project, so you’ll need to install the various dependencies by running:
